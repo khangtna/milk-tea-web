@@ -23,7 +23,7 @@ def getDonHang(request):
 
     ship = 30
     total = sum(item.soLuong * item.giaMon for item in ct_giohang) + ship
-    print('total1:', total)
+    print('total1:',    total)
 
     context={
         'cart_items': ct_giohang,
