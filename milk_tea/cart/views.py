@@ -38,7 +38,7 @@ def add_to_cart(request, mon_id):
             ct_giohang.soLuong += 1
             ct_giohang.save()
             # messages.success(request,  f"{mon.tenMon} đã được thêm vào giỏ hàng.")
-            redirect('detailmon',mon_id)
+            return redirect('detailmon',mon_id)
     else:
          messages.warning(request, "Chưa chọn size.")
          return redirect('detailmon',mon_id)
