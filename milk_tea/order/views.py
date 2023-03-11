@@ -72,6 +72,7 @@ def getDonHang(request):
         pay = request.POST.get('payment')
         # print(pay)
         
+        
 
         if ho == '':
             messages.warning(request,  f"Họ không được để trống.")
@@ -105,28 +106,30 @@ def getDonHang(request):
 
         hoten= ho+ten
         # print(hoten)
+        diachigiao = diachi + ", " +xaphuong+ ", " + quanhuyen+ ", " + tinhtp
+        print("diachigiao: ",diachigiao)
 
         if cp:
             if payid.maTT == 2: #momo
-                DonHang.objects.create(maKH= kh, tongTien=discount,maKM=makm,maTT=payid, diachi=diachi,xaphuong=xaphuong,quanhuyen=quanhuyen,tinhtp=tinhtp,sdt= sdt, hoten=hoten )
+                DonHang.objects.create(maKH= kh, tongTien=discount,maKM=makm,maTT=payid, diachi=diachigiao,sdt= sdt, hoten=hoten )
                 KhuyenMai.objects.filter(code= coupon).update(trangThai= False)
                 GioHang.objects.filter(maKH= kh).update(trangThai=False)
                 return redirect('momo',a.maDH)
 
             else:
-                a=DonHang.objects.create(maKH= kh, tongTien=discount,maKM=makm,maTT=payid, diachi=diachi,xaphuong=xaphuong,quanhuyen=quanhuyen,tinhtp=tinhtp,sdt= sdt, hoten=hoten )
+                a=DonHang.objects.create(maKH= kh, tongTien=discount,maKM=makm,maTT=payid, diachi=diachigiao,sdt= sdt, hoten=hoten )
                 KhuyenMai.objects.filter(code= coupon).update(trangThai= False)
                 GioHang.objects.filter(maKH= kh).update(trangThai=False)
                 # print("aaaaaaaaaaaa:", a.maDH)
                 return redirect('customerview')
         else:
             if payid.maTT == 2: #momo 
-                b=DonHang.objects.create(maKH= kh, tongTien=total,maTT=payid, diachi=diachi,xaphuong=xaphuong,quanhuyen=quanhuyen,tinhtp=tinhtp,sdt= sdt, hoten=hoten )
+                b=DonHang.objects.create(maKH= kh, tongTien=total,maTT=payid, diachi=diachigiao,sdt= sdt, hoten=hoten )
                 GioHang.objects.filter(maKH= kh).update(trangThai=False)
                 return redirect('momo',b.maDH)
 
             else:
-                DonHang.objects.create(maKH= kh, tongTien=total,maTT=payid, diachi=diachi,xaphuong=xaphuong,quanhuyen=quanhuyen,tinhtp=tinhtp,sdt= sdt, hoten=hoten )
+                DonHang.objects.create(maKH= kh, tongTien=total,maTT=payid, diachi=diachigiao,sdt= sdt, hoten=hoten )
                 GioHang.objects.filter(maKH= kh).update(trangThai=False)
                 return redirect('customerview')
 

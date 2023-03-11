@@ -5,7 +5,7 @@ from .models import CTDonHang, DonHang, KhuyenMai, ThanhToan
 
 
 class DHAdmin(admin.ModelAdmin):
-    list_display= ('maDH', 'maKH','tongTien','ngayLap','trangThaiDH','maKM','maTT','diachi','xaphuong','quanhuyen','tinhtp','sdt','hoten')
+    list_display= ('maDH', 'maKH','tongTien','ngayLap','trangThaiDH','maKM','maTT','diachi','sdt','hoten')
 
 class CTDHAdmin(admin.ModelAdmin):
     list_display= ('maCTDH', 'maDH','maMon', 'giaMon','soLuong')

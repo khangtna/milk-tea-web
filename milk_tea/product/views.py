@@ -66,8 +66,6 @@ def getDetailProduct(request,mon_id):
         context['updated_price'] = price
         # print(price)
    
-    
-
     return render(request, 'homepage/product/detailProduct.html', context)
 
 

@@ -161,8 +161,8 @@
                     <div class="d-flex mb-3">
                         <strong class="text-dark mr-3">Sizes:</strong>
    
-                            <form method="post" action="{% url 'addcart' mon.maMon %}?variant={{selected_size}}">
-                                {% csrf_token %} 
+                            <!-- <form method="post" action="{% url 'addcart' mon.maMon %}?variant={{selected_size}}">
+                                {% csrf_token %}  -->
 
                             {% for s in mon.sizeMon.all %}     
                                                                              
@@ -191,11 +191,17 @@
                                 </button>
                             </div>
                         </div> -->
-                        <button class="btn btn-primary px-3">
+
+                        <!-- <button class="btn btn-primary px-3">
                             
                                 <i class="fa fa-shopping-cart mr-1" type="submit">
-                        </i></a> Thêm vào giỏ hàng</button>
-                    </form>
+                        </i> Thêm vào giỏ hàng</button> -->
+
+                        <a href="{% url 'addcart' mon.maMon %}?variant={{selected_size}}" class="btn btn-primary px-3">
+                            
+                            <i class="fa fa-shopping-cart mr-1" type="submit">
+                    </i> Thêm vào giỏ hàng</a>
+                    <!-- </form> -->
                     </div>
                     
                 
