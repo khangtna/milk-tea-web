@@ -17,7 +17,7 @@ from .forms import CtGHForm
 def add_to_cart(request, mon_id):
 
     kh = KhachHang.objects.get(maKH= 1)
-    giohang, created = GioHang.objects.get_or_create(maKH= kh)  # request.user
+    giohang, created = GioHang.objects.get_or_create(maKH= kh, trangThai= True)  # request.user
     mon = get_object_or_404(Mon, maMon=mon_id)
   
     # soluong = 1
@@ -77,7 +77,7 @@ def downQuantity(request, cart_id):
 def cart_view(request):
 
     kh = KhachHang.objects.get(maKH= 1)
-    giohang, created = GioHang.objects.get_or_create(maKH= kh) # request.user
+    giohang, created = GioHang.objects.get_or_create(maKH= kh, trangThai= True) # request.user
     ct_giohang = CTGioHang.objects.filter(maGH=giohang)
     total = sum(item.soLuong * item.giaMon for item in ct_giohang)
 

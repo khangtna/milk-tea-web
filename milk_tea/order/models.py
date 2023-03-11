@@ -17,7 +17,18 @@ class KhuyenMai(models.Model):
 
     
     def __str__(self):
-        return f"{self.maKM}, {self.tenKM}, {self.phantramKM}"
+        return f"{self.code}, {self.phantramKM}"
+
+
+class ThanhToan(models.Model):
+
+    maTT = models.AutoField(primary_key=True)
+    tenTT= models.CharField(max_length= 50)
+
+    
+    def __str__(self):
+        return f"{self.tenTT}"
+    
 
 
 trangthai= (
@@ -35,8 +46,16 @@ class DonHang(models.Model):
     maKH= models.ForeignKey(KhachHang, on_delete=models.CASCADE)
     tongTien= models.DecimalField(default=0, max_digits=9, decimal_places=3)
     ngayLap = models.DateTimeField(auto_now_add= True)
-    trangThaiDH= models.CharField(max_length= 50, choices=trangthai, default=0)
+    trangThaiDH= models.CharField(max_length= 50, choices=trangthai, default=1)
     maKM= models.ForeignKey(KhuyenMai, on_delete=models.SET_NULL, null=True, blank=True)
+    maTT= models.ForeignKey(ThanhToan, on_delete=models.SET_NULL, null=True, blank=True)
+    diachi= models.CharField(max_length= 50,null=True, blank=True)
+    xaphuong= models.CharField(max_length= 50,null=True, blank=True)
+    quanhuyen= models.CharField(max_length= 50,null=True, blank=True)
+    tinhtp= models.CharField(max_length= 50,null=True, blank=True)
+    sdt= models.CharField(max_length= 50,null=True, blank=True)
+    hoten= models.CharField(max_length= 50,null=True, blank=True)
+
 
     
     def __str__(self):

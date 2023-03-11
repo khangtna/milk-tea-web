@@ -5,7 +5,7 @@ from .models import GioHang, CTGioHang
 
 
 class GHAdmin(admin.ModelAdmin):
-    list_display= ('maGH', 'maKH')
+    list_display= ('maGH', 'maKH','trangThai')
 
 class CTGHAdmin(admin.ModelAdmin):
     list_display= ('maCTGH', 'maGH','maMon', 'giaMon','size','soLuong')

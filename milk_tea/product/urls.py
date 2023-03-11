@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .views import getAllProduct, getDMProduct, getDetailProduct
+from .views import getAllProduct, getDMProduct, getDetailProduct, addReview
 
 
 # app_name= 'product'
@@ -8,7 +8,7 @@ from .views import getAllProduct, getDMProduct, getDetailProduct
 urlpatterns = [
     path('product', getAllProduct, name = 'allmon'), 
     path('product/<mon_id>/', getDetailProduct, name = 'detailmon'), 
-
     path('category/<id>', getDMProduct, name = 'DMmon'), 
+    path('reviews', addReview, name = 'addReview'),
     
 ]

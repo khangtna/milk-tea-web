@@ -36,9 +36,18 @@
             </a>
         </div>
         <div class="col-lg-4 col-6 text-left">
-            <form action="">
-                
-            </form>
+            <form action="{% url 'search'  %}" method="get" onsubmit="return check_search();">
+                {% csrf_token %}
+               <div class="input-group">
+                   <input type="text" name="value_search" class="form-control" placeholder="Nhập tên sản phẩm">
+                   <div class="input-group-append">
+                       <span class="input-group-text bg-transparent text-primary">
+                           <button class="btn-primary fa fa-search"> </button>
+                       </span>
+                   </div>
+               </div>
+
+           </form>
         </div>
         
     </div>

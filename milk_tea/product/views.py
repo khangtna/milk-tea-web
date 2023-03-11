@@ -1,7 +1,9 @@
 from django.shortcuts import render,redirect, get_object_or_404
 from django.views import View
+from django.contrib import messages
 
-from product.models import Danhmuc, Mon, CTGia
+from product.models import Danhmuc, Mon, CTGia, CTDanhGia
+from .forms import danhGiaForm
 
 
 
@@ -45,9 +47,14 @@ def getDetailProduct(request,mon_id):
 
     sizes= mon.sizeMon.all()
 
+    danhgiaMon = CTDanhGia.objects.filter(maMon = mon_id)
+    form = danhGiaForm()
+
     context={
         'mon': mon,
-        'sizes':sizes
+        'sizes':sizes,
+        'danhgia': danhgiaMon,
+        'form' : form,
 
     }
 
@@ -64,4 +71,28 @@ def getDetailProduct(request,mon_id):
     return render(request, 'homepage/product/detailProduct.html', context)
 
 
+def addReview(request):
+    url = request.META.get('HTTP_REFERER')
+    if request.method == "POST":
+        input = danhGiaForm(request.POST, request.FILES)
 
+        input.is_valid()
+        input.save()
+
+        ob = float(input['rating'].value())
+        mon = input['maMon'].value()
+        print(mon)
+        obmon = Mon.objects.get(maMon = mon)
+
+        sldanhgia = CTDanhGia.objects.filter(maMon = mon)
+
+        sum = 0.0
+        for item in sldanhgia:
+            sum += item.rating
+        sum+= ob
+        obmon.rating = (sum/(sldanhgia.count()+1))
+        obmon.save()
+
+        messages.success(request, f"Cảm ơn bạn đã đánh giá.")
+        return redirect(url)
+    return redirect('allmon')

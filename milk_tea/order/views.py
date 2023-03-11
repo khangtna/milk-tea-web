@@ -2,8 +2,11 @@ from django.shortcuts import render,redirect, get_object_or_404
 from django.views import View
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.utils.http import urlencode
+from django.urls import reverse
 
-from .models import DonHang, CTDonHang, KhuyenMai
+
+from .models import DonHang, CTDonHang, KhuyenMai,ThanhToan
 from cart.models import GioHang, CTGioHang
 from customer.models import KhachHang
 
@@ -18,8 +21,9 @@ def getDonHang(request):
     today= datetime.date.today()
 
     kh = KhachHang.objects.get(maKH= 1)
-    giohang, created = GioHang.objects.get_or_create(maKH= kh) # request.user
+    giohang, created = GioHang.objects.get_or_create(maKH= kh, trangThai = True) # request.user
     ct_giohang = CTGioHang.objects.filter(maGH=giohang)
+    thanhtoan= ThanhToan.objects.all()
 
     ship = 30
     total = sum(item.soLuong * item.giaMon for item in ct_giohang) + ship
@@ -28,38 +32,150 @@ def getDonHang(request):
     context={
         'cart_items': ct_giohang,
         'total':total, 
-        'ship':ship
+        'ship':ship,
+        'payment':thanhtoan
 
     }
+
+    coupon= request.GET.get('cp')
+    # print("cp",coupon)
+
+    cp= KhuyenMai.objects.filter(code= coupon, trangThai= True, ngayHetHan__gte = today).values_list('phantramKM', flat=True)
+    # print("cp2:", cp)
+    if coupon:
+        makm= KhuyenMai.objects.get(code= coupon, trangThai= True, ngayHetHan__gte = today)
+    # print("maKM:", maKM[0])
+    # if makm:
+    #     maKM=makm[0]
+    # print(maKM)
+
+    discount=0
+
+    if cp:
+        sotiengiam= round((Decimal(sum(cp)) / 100)*total)
+        print('giam:',sotiengiam)
+        total_discount = total - sotiengiam 
+        print('tong:', total_discount)
+        context['total_discount']= total_discount
+        discount= total_discount
+
+    print("discount: ",discount)
+
+    if request.method == 'POST':
+        ho = request.POST.get('ho')
+        ten = request.POST.get('ten')
+        sdt = request.POST.get('sdt')
+        diachi = request.POST.get('diachi')
+        xaphuong = request.POST.get('xaphuong')
+        quanhuyen = request.POST.get('quanhuyen')
+        tinhtp = request.POST.get('tinhtp')
+        pay = request.POST.get('payment')
+        # print(pay)
+        
+
+        if ho == '':
+            messages.warning(request,  f"Họ không được để trống.")
+            return redirect('bill')
+        if ten == '':
+            messages.warning(request,  f"Tên không được để trống.")
+            return redirect('bill')
+        if sdt == '':
+            messages.warning(request,  f"Số điện thoại không được để trống.")
+            return redirect('bill')
+        if diachi == '':
+            messages.warning(request,  f"Địa chỉ không được để trống.")
+            return redirect('bill')
+        if xaphuong == '':
+            messages.warning(request,  f"Xã phườngkhông được để trống.")
+            return redirect('bill')
+        if quanhuyen == '':
+            messages.warning(request,  f"Quận huyện không được để trống.")
+            return redirect('bill')
+        if tinhtp == '':
+            messages.warning(request,  f"Tỉnh thành phố không được để trống.")
+            return redirect('bill')
+        
+        if pay == None:
+            messages.warning(request,  f"Vui lòng chọn phương thức thanh toán.")
+            return redirect('bill')
+            
+        else:
+            payid= ThanhToan.objects.get(maTT=pay)
+            print(payid)
+
+        hoten= ho+ten
+        # print(hoten)
+
+        if cp:
+            if payid.maTT == 2: #momo
+                DonHang.objects.create(maKH= kh, tongTien=discount,maKM=makm,maTT=payid, diachi=diachi,xaphuong=xaphuong,quanhuyen=quanhuyen,tinhtp=tinhtp,sdt= sdt, hoten=hoten )
+                KhuyenMai.objects.filter(code= coupon).update(trangThai= False)
+                GioHang.objects.filter(maKH= kh).update(trangThai=False)
+                return redirect('momo',a.maDH)
+
+            else:
+                a=DonHang.objects.create(maKH= kh, tongTien=discount,maKM=makm,maTT=payid, diachi=diachi,xaphuong=xaphuong,quanhuyen=quanhuyen,tinhtp=tinhtp,sdt= sdt, hoten=hoten )
+                KhuyenMai.objects.filter(code= coupon).update(trangThai= False)
+                GioHang.objects.filter(maKH= kh).update(trangThai=False)
+                # print("aaaaaaaaaaaa:", a.maDH)
+                return redirect('customerview')
+        else:
+            if payid.maTT == 2: #momo 
+                b=DonHang.objects.create(maKH= kh, tongTien=total,maTT=payid, diachi=diachi,xaphuong=xaphuong,quanhuyen=quanhuyen,tinhtp=tinhtp,sdt= sdt, hoten=hoten )
+                GioHang.objects.filter(maKH= kh).update(trangThai=False)
+                return redirect('momo',b.maDH)
+
+            else:
+                DonHang.objects.create(maKH= kh, tongTien=total,maTT=payid, diachi=diachi,xaphuong=xaphuong,quanhuyen=quanhuyen,tinhtp=tinhtp,sdt= sdt, hoten=hoten )
+                GioHang.objects.filter(maKH= kh).update(trangThai=False)
+                return redirect('customerview')
+
+    
+        
+    return render(request, 'homepage/order/checkout.html', context)
+
+
+
+def getDiscount(request):
+
+    today= datetime.date.today()
+
+    kh = KhachHang.objects.get(maKH= 1)
+    giohang, created = GioHang.objects.get_or_create(maKH= kh, trangThai = True) # request.user
+    ct_giohang = CTGioHang.objects.filter(maGH=giohang)
+
+    ship = 30
+    total = sum(item.soLuong * item.giaMon for item in ct_giohang) + ship
+    # print('total1:',    total)
 
     if request.method == 'POST':
         coupon= request.POST.get('coupon')
         # print(coupon)
 
-        if not coupon:
-            messages.warning(request,  f"Mã giảm giá không hợp lệ.")
-            return redirect('bill')
-        
         cp= KhuyenMai.objects.filter(code= coupon, trangThai= True, ngayHetHan__gte = today).values_list('phantramKM', flat=True)
-        # cp= KhuyenMai.objects.get(code = coupon, trangThai= True, ngayHetHan__gte = today).phantramKM
-        # print(cp)
-        # print(sum(cp))
-
+        
         if cp:
             sotiengiam= round((Decimal(sum(cp)) / 100)*total)
-            print('giam:',sotiengiam)
+            # print('giam:',sotiengiam)
             total_discount = total - sotiengiam +ship
-            print('tong:', total_discount)
-            context['total_discount']= total_discount
+            # print('tong:', total_discount)
+            # price_discount= total_discount
             # KhuyenMai.objects.filter(code= coupon).update(trangThai= False)
             messages.success(request,  f"Sử dụng mã thành công.")
-            # return redirect('bill')
+            return redirect(reverse('bill') + '?' + urlencode({'cp': coupon }))
         else:
             messages.warning(request,  f"Mã giảm giá không tồn tại hoặc đã hết hạn.")
             return redirect('bill')
-   
-    # total= total + ship
-    # print('total2: ', total)
+    return redirect('bill')
 
 
-    return render(request, 'homepage/order/checkout.html', context)
+def checkMOMO(request, id_dh):
+
+    # donhang= DonHang.objects.filter(maDH= id_dh)
+    donhang= get_object_or_404(DonHang, pk= id_dh)
+
+    context={
+        'dh': donhang
+    }
+
+    return render(request, 'homepage/order/momo.html', context)

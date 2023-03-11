@@ -10,15 +10,11 @@
 
     <!-- Google Web Fonts -->
     <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet"> 
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">  
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
- 
-
     <!-- Font Awesome -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-
-
     <!-- Libraries Stylesheet -->
     <link href="{% static 'homepage/lib/animate/animate.min.css' %}" rel="stylesheet">
     <link href="{% static 'homepage/lib/owlcarousel/assets/owl.carousel.min.css' %}" rel="stylesheet">
@@ -26,76 +22,78 @@
     <!-- Customized Bootstrap Stylesheet -->
     <link href="{% static 'homepage/css/style.css' %}" rel="stylesheet">
     <link href="{% static 'homepage/vendor/datatables/dataTables.bootstrap4.min.css' %}" rel="stylesheet">
+<!--    <link href="{% static 'homepage/css/sb-admin-2.min.css' %}" rel="stylesheet">-->
+
 
 
 
     <style>
-        table { border: none;}
-    
-            /* Hide Radio button */
-    .rate > input{
-      display: none;
-    }
-    
-    .rate{
-      display: inline-block;;
-      border: 0;
-    }
-    
-    .rate > label{
-      float: right;
-    }
-    
-    /* Showing the stars */
-    .rate > label:before{
-      display: inline-block;
-      font-size: 1.1rem;
-      font-family: FontAwesome;
-      content: "\f005";
-      margin:0;
-      padding:0.3rem .2rem;
-      cursor: pointer;
-    }
-    
-    /* Half star */
-    .rate .half:before{
-      content: "\f089";
-      position: absolute;
-      padding-right: 0;
-    }
-    
-    /* Click and hover */
-    input:checked ~ label, label:hover ~ label{
-      color: #ffb503;
-    }
-    
-    /* hover hightlight */
-    input:checked + label:hover, input:checked ~ label:hover,input:checked ~ label:hover ~ label,
-    label:hover ~ input:checked ~ label{
-      color: #cc9000;
-    }
-    
-    .rating-star i{
-      color: #ffb503 !important;
-    }
-    
-    ul.thumb{
-      margin:0 auto;
-      padding: 0;
-      float: left;
-    }
-    ul.thumb li{
-      list-style: none;
-      margin: 10px;
-    }
-    ul.thumb li img{
-      width: 80px;
-      height: 80px;
-      border: 1px solid grey;
-    }
-    
-    
-        </style>
+    table { border: none;}
+
+        /* Hide Radio button */
+.rate > input{
+  display: none;
+}
+
+.rate{
+  display: inline-block;;
+  border: 0;
+}
+
+.rate > label{
+  float: right;
+}
+
+/* Showing the stars */
+.rate > label:before{
+  display: inline-block;
+  font-size: 1.1rem;
+  font-family: FontAwesome;
+  content: "\f005";
+  margin:0;
+  padding:0.3rem .2rem;
+  cursor: pointer;
+}
+
+/* Half star */
+.rate .half:before{
+  content: "\f089";
+  position: absolute;
+  padding-right: 0;
+}
+
+/* Click and hover */
+input:checked ~ label, label:hover ~ label{
+  color: #ffb503;
+}
+
+/* hover hightlight */
+input:checked + label:hover, input:checked ~ label:hover,input:checked ~ label:hover ~ label,
+label:hover ~ input:checked ~ label{
+  color: #cc9000;
+}
+
+.rating-star i{
+  color: #ffb503 !important;
+}
+
+ul.thumb{
+  margin:0 auto;
+  padding: 0;
+  float: left;
+}
+ul.thumb li{
+  list-style: none;
+  margin: 10px;
+}
+ul.thumb li img{
+  width: 80px;
+  height: 80px;
+  border: 1px solid grey;
+}
+
+
+    </style>
     {% endblock %}
 
 
@@ -142,13 +140,19 @@
                     <h3>{{mon.tenMon}}</h3>
                     <div class="d-flex mb-3">
                         <div class="text-primary mr-2">
-                            <small class="fas fa-star"></small>
-                            <small class="fas fa-star"></small>
-                            <small class="fas fa-star"></small>
-                            <small class="fas fa-star-half-alt"></small>
-                            <small class="far fa-star"></small>
+                                <i class="fa fa-star{% if mon.rating < 0.5 %}-o{% elif mon.rating >= 0.5 and mon.rating < 1 %}-half-o {% endif %}" aria-hidden="true"></i>
+                                <i class="fa fa-star{% if mon.rating < 1.5 %}-o{% elif mon.rating >= 1.5 and mon.rating < 2 %}-half-o {% endif %}" aria-hidden="true"></i>
+                                <i class="fa fa-star{% if mon.rating < 2.5 %}-o{% elif mon.rating >= 2.5 and mon.rating < 3 %}-half-o {% endif %}" aria-hidden="true"></i>
+                                <i class="fa fa-star{% if mon.rating < 3.5 %}-o{% elif mon.rating >= 3.5 and mon.rating < 4 %}-half-o {% endif %}" aria-hidden="true"></i>
+                                <i class="fa fa-star{% if mon.rating < 4.5 %}-o{% elif mon.rating >= 4.5 and mon.rating < 5 %}-half-o {% endif %}" aria-hidden="true"></i>
+
+<!--                            <small class="fas fa-star"></small>-->
+<!--                            <small class="fas fa-star"></small>-->
+<!--                            <small class="fas fa-star"></small>-->
+<!--                            <small class="fas fa-star-half-alt"></small>-->
+<!--                            <small class="far fa-star"></small>-->
                         </div>
-                        <small class="pt-1">(99 Reviews)</small>
+                        <small class="pt-1">( {{ danhgia.count }} Review{% if danhgia.count > 1 %}s {% endif %} )</small>
                     </div>
                     <h3 class="font-weight-semi-bold mb-4" id='price' >
                     {% if updated_price %}
@@ -171,7 +175,7 @@
                                     <label class="custom-control-label" for="{{s.maGia}}">{{ s.size }}</label>
                                 </div>
                             {% endfor %}
-                            
+                            </form>
                     </div>
                     
                     
@@ -211,7 +215,7 @@
                     <div class="nav nav-tabs mb-4">
                         <a class="nav-item nav-link text-dark active" data-toggle="tab" href="#tab-pane-1">Mô tả</a>
                         
-                        <a class="nav-item nav-link text-dark " data-toggle="tab" href="#tab-pane-3">Đánh giá</a>
+                        <a class="nav-item nav-link text-dark" data-toggle="tab" href="#tab-pane-3">Đánh giá</a>
                     </div>
                     <div class="tab-content">
                         <div class="tab-pane fade show active" id="tab-pane-1">
@@ -223,12 +227,20 @@
                             <div class="row">
                                 <div class="col-md-6 card-body ">
 
-                                    <h4 class="mb-4">Có {{danhgia.count}} đánh giá {% if danhgia.count > 1 %} {% endif %} cho {{mon.tenMon}}</h4>
+                                    <h4 class="mb-4">{{danhgia.count}} review{% if danhgia.count > 1 %}s{% endif %} for "Product Name"</h4>
                                     <div class="media mb-4">
                                         <div class="media-body">
+                                            <h6>John Doe<small> - <i>01 Jan 2045</i></small></h6>
+                                            <div class="text-primary mb-2">
+
+                                                <i class="fa fa-star{% if item.rating < 0.5 %}-o{% elif item.rating >= 0.5 and item.rating < 1 %}-half-o {% endif %}" aria-hidden="true"></i>
+                                                <i class="fa fa-star{% if item.rating < 1.5 %}-o{% elif item.rating >= 1.5 and item.rating < 2 %}-half-o {% endif %}" aria-hidden="true"></i>
+                                                <i class="fa fa-star{% if item.rating < 2.5 %}-o{% elif item.rating >= 2.5 and item.rating < 3 %}-half-o {% endif %}" aria-hidden="true"></i>
+                                                <i class="fa fa-star{% if item.rating < 3.5 %}-o{% elif item.rating >= 3.5 and item.rating < 4 %}-half-o {% endif %}" aria-hidden="true"></i>
+                                                <i class="fa fa-star{% if item.rating < 4.5 %}-o{% elif item.rating >= 4.5 and item.rating < 5 %}-half-o {% endif %}" aria-hidden="true"></i>
+<!--
+                                            <i class="fa fa-star-half" aria-hidden="true"></i>&ndash;&gt;-->
                                             
-                                            
-                                        </div>
                                     </div>
 
 
@@ -260,6 +272,13 @@
 							</div>
 
 
+<!--                                            <div class="text-primary mb-2">-->
+<!--                                                <i class="fas fa-star"></i>-->
+<!--                                                <i class="fas fa-star"></i>-->
+<!--                                                <i class="fas fa-star"></i>-->
+<!--                                                <i class="fas fa-star-half-alt"></i>-->
+<!--                                                <i class="far fa-star"></i>-->
+<!--                                            </div>-->
                                             <p>{{ item.nhanXet }}</p>
                                             {% if item.hinhAnh != '' %}
                                             <img  style="width: 30%; height: 30%;" src="/image/{{item.hinhAnh}}" alt="Image">
@@ -278,12 +297,11 @@
 
                                 <div class="col-md-6">
                                     <h4 class="mb-4">Đánh giá của bạn</h4>
-
-                                    <form action="{% url 'addReview' %}" method="POST" >
+                                    <form action="{% url 'addReview' %}" method="post" enctype='multipart/form-data'>
                                         {% csrf_token %}
-                                    <!-- <small>Your email address will not be published. Required fields are marked *</small> -->
+                                    <small>Your email address will not be published. Required fields are marked *</small>
                                     <div class="d-flex my-3">
-                                        <p class="mb-0 mr-2">Đánh giá*:</p>
+                                        <p class="mb-0 mr-2">Your Rating * :</p>
 
                                         <div class="rate">
                                             <input type="radio" name="rating" id="rating10" value="5" required /><label for="rating10" title="5"></label>
@@ -297,26 +315,51 @@
                                             <input type="radio" name="rating" id="rating2" value="1" required /><label for="rating2" title="1"></label>
                                             <input type="radio" name="rating" id="rating1" value="0.5" required /><label for="rating1" title="0.5" class="half"></label>
 						                </div>
+
+<!--                                        <p class="mb-0 mr-2" >{{ form.soSao }}</p>-->
+
+<!--                                        <div class="text-primary">-->
+<!--                                            <i class="far fa-star"></i>-->
+<!--                                            <i class="far fa-star"></i>-->
+<!--                                            <i class="far fa-star"></i>-->
+<!--                                            <i class="far fa-star"></i>-->
+<!--                                            <i class="far fa-star"></i>-->
+<!--                                        </div>-->
                                     </div>
 
 
                                         <div class="form-group">
-                                            <label for="message">Nhận xét*:</label>
+                                            <label for="message">Your Review *</label>
                                              <p id="message">{{ form.nhanXet }} </p>
 <!--                                            <textarea id="message" cols="30" rows="5" class="form-control"></textarea>-->
                                         </div>
-
+<!--                                        <div class="form-group">-->
+<!--                                            <label for="name">Your Name *</label>-->
+<!--                                            <input type="text" class="form-control" id="name">-->
+<!--                                        </div>-->
+<!--                                        <div class="form-group">-->
+<!--                                            <label for="email">Your Email *</label>-->
+<!--                                            <input type="email" class="form-control" id="email">-->
+<!--                                        </div>-->
                                            <p>{{ form.hinhAnh }}</p>
                                             <p style="display:none;">{{ form.maKH }}</p>
                                             <p style="display:none;">{{ form.maMon }}</p>
                                         <div class="form-group mb-0">
                                             <input type="submit" value="Đánh giá" class="btn btn-primary px-3">
                                         </div>
-
                                     </form>
                                 </div>
                             </div>
+<!--                           <form action="{% url 'addReview' %}" method="post">-->
+<!--                                {% csrf_token %}-->
+<!--                                <p class="mb-0 mr-2" >{{ form.soSao }}</p>-->
+<!--                               <p>{{ form.nhanXet }} </p>-->
+<!--                                <p>{{ form.hinhAnh }}</p>-->
+<!--                               <p style="display:none;">{{ form.maKH }}</p>-->
+<!--                               <p style="display:none;">{{ form.maMon }}</p>-->
 
+<!--                    <input type="submit" value="Đánh giá"></input>-->
+<!--                    </form>-->
                         </div>
                     </div>
                 </div>
@@ -381,16 +424,32 @@
     <!-- JavaScript Libraries -->
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
-    <script src="lib/easing/easing.min.js"></script>
-    <script src="lib/owlcarousel/owl.carousel.min.js"></script>
+    <script src="{% static 'homepage/lib/easing/easing.min.js' %}"></script>
+    <script src="{% static 'homepage/lib/owlcarousel/owl.carousel.min.js' %}"></script>
 
     <!-- Contact Javascript File -->
-    <script src="mail/jqBootstrapValidation.min.js"></script>
-    <script src="mail/contact.js"></script>
+    <script src="{% static 'homepage/mail/jqBootstrapValidation.min.js' %}"></script>
+    <script src="{% static 'homepage/mail/contact.js' %}"></script>
 
     <!-- Template Javascript -->
-    <script src="js/main.js"></script>
 
+
+   <!-- Bootstrap core JavaScript-->
+    <script src="{% static 'homepage/vendor/jquery/jquery.min.js' %}"></script>
+    <script src="{% static 'homepage/vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+
+      <!-- Core plugin JavaScript-->
+    <script src="{% static 'homepage/vendor/jquery-easing/jquery.easing.min.js' %}"></script>
+
+ <!-- Custom scripts for all pages-->
+    <script src="{% static 'homepage/js/sb-admin-2.min.js' %}"></script>
+
+ <!-- Page level plugins -->
+    <script src="{% static 'homepage/vendor/datatables/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static 'homepage/vendor/datatables/dataTables.bootstrap4.min.js' %}" ></script>
+
+    <!-- Page level custom scripts -->
+    <script src="{% static 'homepage/js/demo/datatables-demo.js' %}"></script>
 
     <!-- <script>
         $("input[type='radio']").click(function() {
@@ -426,6 +485,16 @@
         else
             {document.getElementById('quantity').value=1;}
         }
+
+         $(document).ready(function(){
+            document.getElementById('id_maMon').value = {{ mon.maMon }};
+            document.getElementById('id_maKH').value = 1;
+            document.getElementById('id_nhanXet').classList.add("form-control");
+            document.getElementById('dataTable_filter').style.display = 'none';
+            document.getElementById('dataTable').tHead.style.display = 'none';
+         });
+
+
     </script>
 
  {% endblock %}

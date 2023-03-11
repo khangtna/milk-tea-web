@@ -12,14 +12,16 @@ class Index(View):
     def get(self, request):
 
         kh = KhachHang.objects.get(maKH= 1)
-        giohang= GioHang.objects.get(maKH = kh) # request.user
-        count_cart= CTGioHang.objects.filter(maGH=giohang).count()
-        print(count_cart)
+        # giohang= GioHang.objects.get(maKH = kh, trangThai= True) # request.user
+        # if giohang:
+        #     count_cart= CTGioHang.objects.filter(maGH=giohang).count()
+        # print(count_cart)
+        
         
         context={
             'dm': Danhmuc.objects.all(),
-            'mon': Mon.objects.filter(trangThaiMon=True),
-            'count_cart':count_cart
+            'mon': Mon.objects.filter(trangThaiMon=True)
+            
         }
 
 
@@ -29,8 +31,9 @@ class Index(View):
 def getTopBar(request):
 
     kh = KhachHang.objects.get(maKH= 1)
-    giohang= GioHang.objects.get(maKH = kh) # request.user
-    count_cart= CTGioHang.objects.filter(maGH=giohang).count()
+    giohang= GioHang.objects.get(maKH = kh, trangThai= True) # request.user
+    if giohang:
+        count_cart= CTGioHang.objects.filter(maGH=giohang).count()
     print(count_cart)
 
     context={
@@ -41,4 +44,30 @@ def getTopBar(request):
     }
 
     return render(request, 'homepage/topbar.html', context)
+
+
+def search(request):
+    url = request.META.get('HTTP_REFERER');
+
+    key = request.GET.get("value_search");
+    if key is None:
+        return redirect(Index(View))
+
+    kh = KhachHang.objects.get(maKH=1)
+    giohang = GioHang.objects.get(maKH=1, trangThai= True)  # request.user
+    if giohang:
+        count_cart = CTGioHang.objects.filter(maGH=giohang).count()
+
+    result = Mon.objects.filter(tenMon__search = key)
+
+    print(result)
+
+    context = {
+        'dm': Danhmuc.objects.all(),
+        'mon': Mon.objects.filter(trangThaiMon=True),
+        'montk': result,    #  Mon.objects.filter(trangThaiMon=True),
+        'count_cart': count_cart
+    }
+
+    return render(request, 'homepage/index.html', context)
 

@@ -9,6 +9,7 @@ class GioHang(models.Model):
 
     maGH = models.AutoField(primary_key=True)
     maKH= models.ForeignKey(KhachHang, on_delete=models.CASCADE)
+    trangThai= models.BooleanField(default=True)
     
     def __str__(self):
         return str(self.maGH)
