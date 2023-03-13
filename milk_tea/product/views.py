@@ -1,8 +1,11 @@
 from django.shortcuts import render,redirect, get_object_or_404
 from django.views import View
 from django.contrib import messages
+from django.db.models import Avg
 
 from product.models import Danhmuc, Mon, CTGia, CTDanhGia
+from cart.models import GioHang, CTGioHang,CTGia
+from customer.models import KhachHang
 from .forms import danhGiaForm
 
 
@@ -41,6 +44,7 @@ def getDetailProduct(request,mon_id):
    
     m= get_object_or_404(CTGia ,pk= 14)
     l= get_object_or_404(CTGia ,pk= 15) 
+    
 
     mon.sizeMon.add(m)
     mon.sizeMon.add(l)
@@ -48,13 +52,41 @@ def getDetailProduct(request,mon_id):
     sizes= mon.sizeMon.all()
 
     danhgiaMon = CTDanhGia.objects.filter(maMon = mon_id)
+    # print(type(danhgiaMon[0]))
+    countdg = CTDanhGia.objects.filter(maMon = mon_id).count
     form = danhGiaForm()
+
+    if request.user.is_anonymous:
+        messages.warning(request, f"Bạn cần phải đăng nhập để tiếp tục!")
+        return redirect('/login')
+
+    email =request.user.email
+    makh= KhachHang.objects.get(email= email)
+    print("--------------------------------------------------------- ")
+    print("ma khách hàng: ", makh)
+    makhachhang= makh.maKH
+    print("makhach", makhachhang)
+    giohang, created= GioHang.objects.get_or_create(maKH = makh, trangThai= True)
+
+    countcart=0
+    # if gh == None:
+    #     giohang= GioHang.objects.create(maKH=makh)
+    count_cart= CTGioHang.objects.filter(maGH=giohang).count()
+    countcart= count_cart
+    
+
+    totalrate= CTDanhGia.objects.filter(maMon = mon_id).aggregate(Avg('rating'))['rating__avg']
+    print("total rate: ",totalrate)
 
     context={
         'mon': mon,
         'sizes':sizes,
         'danhgia': danhgiaMon,
+        'countdg':countdg,
+        'totalrate':totalrate,
         'form' : form,
+        'count_cart':countcart,
+        'makh':makhachhang
 
     }
 
@@ -71,25 +103,21 @@ def getDetailProduct(request,mon_id):
 
 def addReview(request):
     url = request.META.get('HTTP_REFERER')
+
+    if request.user.is_anonymous:
+        messages.warning(request, f"Bạn cần phải đăng nhập để tiếp tục!")
+        return redirect('/login')
+
+    email =request.user.email
+    kh= KhachHang.objects.filter(email= email).values_list('maKH', flat=True)
+
     if request.method == "POST":
         input = danhGiaForm(request.POST, request.FILES)
 
         input.is_valid()
         input.save()
 
-        ob = float(input['rating'].value())
-        mon = input['maMon'].value()
-        print(mon)
-        obmon = Mon.objects.get(maMon = mon)
-
-        sldanhgia = CTDanhGia.objects.filter(maMon = mon)
-
-        sum = 0.0
-        for item in sldanhgia:
-            sum += item.rating
-        sum+= ob
-        obmon.rating = (sum/(sldanhgia.count()+1))
-        obmon.save()
+        print("aaaaaaaa", input)
 
         messages.success(request, f"Cảm ơn bạn đã đánh giá.")
         return redirect(url)

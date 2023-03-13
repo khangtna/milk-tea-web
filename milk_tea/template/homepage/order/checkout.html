@@ -54,14 +54,14 @@
                         {% csrf_token %}
 
                     <div class="row">
-
+                        {% for kh in khachhang %}
                             <div class="col-md-6 form-group">
                             <label>Họ</label>
-                            <input class="form-control" type="text" placeholder="" name="ho">
+                            <input class="form-control" type="text" placeholder="" name="ho" value="{{kh.hoKH}}">
                         </div>
                         <div class="col-md-6 form-group">
                             <label>Tên</label>
-                            <input class="form-control" type="text" placeholder="" name="ten">
+                            <input class="form-control" type="text" placeholder="" name="ten" value="{{kh.tenKH}}">
                         </div>
                         <!-- <div class="col-md-6 form-group">
                             <label>E-mail</label>
@@ -69,8 +69,9 @@
                         </div> -->
                         <div class="col-md-6 form-group">
                             <label>Số điện thoại</label>
-                            <input class="form-control" type="number" placeholder="" name="sdt">
+                            <input class="form-control" type="number" placeholder="" name="sdt" value="{{kh.sdt}}">
                         </div>
+                        {% endfor %}
                         <div class="col-md-6 form-group">
                             <label>Địa chỉ</label>
                             <input class="form-control" type="text" placeholder="" name="diachi">
@@ -193,7 +194,7 @@
     <script>    
         function getcp(){             
             let code = document.getElementById("coupon").value 
-            document.getElementById("myCP").value = code;
+            // document.getElementById("myCP").value = code;
       
             window.history.pushState("object or string", "Title", "/checkout/?cp=" + code); 
                
@@ -294,13 +295,13 @@
     <!-- JavaScript Libraries -->
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
-    <script src="lib/easing/easing.min.js"></script>
-    <script src="lib/owlcarousel/owl.carousel.min.js"></script>
+    <script src="{% static 'homepage/lib/easing/easing.min.js' %}"></script>
+    <script src="{% static 'homepage/lib/owlcarousel/owl.carousel.min.js' %}"></script>
 
     <!-- Contact Javascript File -->
-    <script src="mail/jqBootstrapValidation.min.js"></script>
-    <script src="mail/contact.js"></script>
+    <script src="{% static 'homepage/mail/jqBootstrapValidation.min.js' %}"></script>
+    <script src="{% static 'homepage/mail/contact.js' %}"></script>
 
     <!-- Template Javascript -->
-    <script src="js/main.js"></script>
+    <script src="{% static 'homepage/js/main.js' %}"></script>
     {% endblock %}

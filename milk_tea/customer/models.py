@@ -9,9 +9,9 @@ class KhachHang(models.Model):
     hoKH = models.CharField(max_length= 10)
     tenKH = models.CharField(max_length= 10)
     sdt= models.IntegerField(default= 0)
-    email = models.EmailField(default= None)
+    email = models.EmailField(default= None, unique=True)
     diaChi= models.CharField(max_length= 50)
 
     def __str__(self):
-        return f"{self.maKH}, {self.hoKH} {self.tenKH}"
+        return f"{self.hoKH} {self.tenKH}"
 

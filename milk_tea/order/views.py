@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.utils.http import urlencode
 from django.urls import reverse
-
+from django.contrib.auth.decorators import login_required
 
 from .models import DonHang, CTDonHang, KhuyenMai,ThanhToan
 from cart.models import GioHang, CTGioHang
@@ -16,24 +16,36 @@ from decimal import Decimal
 
 # Create your views here.
 
+@login_required
 def getDonHang(request):
 
     today= datetime.date.today()
 
-    kh = KhachHang.objects.get(maKH= 1)
-    giohang, created = GioHang.objects.get_or_create(maKH= kh, trangThai = True) # request.user
+    if request.user.is_anonymous:
+        messages.warning(request, f"Bạn cần phải đăng nhập để tiếp tục!")
+        return redirect('/login')
+
+    email =request.user.email
+    kh= KhachHang.objects.get(email= email)
+    khachhang= KhachHang.objects.filter(email= email)
+    print("khach: ",khachhang)
+    giohang, created= GioHang.objects.get_or_create(maKH = kh, trangThai= True)
+
+    # kh = KhachHang.objects.get(maKH= 1)
+    # giohang, created = GioHang.objects.get_or_create(maKH= kh, trangThai = True) # request.user
     ct_giohang = CTGioHang.objects.filter(maGH=giohang)
     thanhtoan= ThanhToan.objects.all()
 
     ship = 30
     total = sum(item.soLuong * item.giaMon for item in ct_giohang) + ship
-    print('total1:',    total)
+    # print('total1:',    total)
 
     context={
         'cart_items': ct_giohang,
         'total':total, 
         'ship':ship,
-        'payment':thanhtoan
+        'payment':thanhtoan,
+        'khachhang':khachhang
 
     }
 
@@ -53,13 +65,13 @@ def getDonHang(request):
 
     if cp:
         sotiengiam= round((Decimal(sum(cp)) / 100)*total)
-        print('giam:',sotiengiam)
+        # print('giam:',sotiengiam)
         total_discount = total - sotiengiam 
-        print('tong:', total_discount)
+        # print('tong:', total_discount)
         context['total_discount']= total_discount
         discount= total_discount
 
-    print("discount: ",discount)
+    # print("discount: ",discount)
 
     if request.method == 'POST':
         ho = request.POST.get('ho')
@@ -138,13 +150,21 @@ def getDonHang(request):
     return render(request, 'homepage/order/checkout.html', context)
 
 
-
+@login_required
 def getDiscount(request):
 
     today= datetime.date.today()
 
-    kh = KhachHang.objects.get(maKH= 1)
-    giohang, created = GioHang.objects.get_or_create(maKH= kh, trangThai = True) # request.user
+    if request.user.is_anonymous:
+        messages.warning(request, f"Bạn cần phải đăng nhập để tiếp tục!")
+        return redirect('/login')
+
+    email =request.user.email
+    kh= KhachHang.objects.get(email= email)
+    giohang, created= GioHang.objects.get_or_create(maKH = kh, trangThai= True)
+
+    # kh = KhachHang.objects.get(maKH= 1)
+    # giohang, created = GioHang.objects.get_or_create(maKH= kh, trangThai = True) # request.user
     ct_giohang = CTGioHang.objects.filter(maGH=giohang)
 
     ship = 30
@@ -171,7 +191,7 @@ def getDiscount(request):
             return redirect('bill')
     return redirect('bill')
 
-
+@login_required
 def checkMOMO(request, id_dh):
 
     # donhang= DonHang.objects.filter(maDH= id_dh)

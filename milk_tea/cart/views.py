@@ -16,8 +16,21 @@ from .forms import CtGHForm
 # @login_required
 def add_to_cart(request, mon_id):
 
-    kh = KhachHang.objects.get(maKH= 1)
-    giohang, created = GioHang.objects.get_or_create(maKH= kh, trangThai= True)  # request.user
+    if request.user.is_anonymous:
+        messages.warning(request, f"Bạn cần phải đăng nhập để tiếp tục!")
+        return redirect('/login')
+
+    email =request.user.email
+    kh= KhachHang.objects.filter(email= email).values_list('maKH', flat=True)
+    makh=sum(kh)
+    # gh= GioHang.objects.filter(maKH = makh, trangThai= True).values_list('maGH', flat=True)
+    # print("gh: ", gh)
+    # giohang=sum(gh)
+    # print("gio hang: ",giohang)
+    giohang= GioHang.objects.get(maKH = makh, trangThai= True)
+
+    # kh = KhachHang.objects.get(maKH= 1)
+    # giohang, created = GioHang.objects.get_or_create(maKH= kh, trangThai= True)  
     mon = get_object_or_404(Mon, maMon=mon_id)
   
     # soluong = 1
@@ -76,8 +89,17 @@ def downQuantity(request, cart_id):
 # @login_required
 def cart_view(request):
 
-    kh = KhachHang.objects.get(maKH= 1)
-    giohang, created = GioHang.objects.get_or_create(maKH= kh, trangThai= True) # request.user
+    if request.user.is_anonymous:
+        messages.warning(request, f"Bạn cần phải đăng nhập để tiếp tục!")
+        return redirect('/login')
+
+    email =request.user.email
+    kh= KhachHang.objects.filter(email= email).values_list('maKH', flat=True)
+    makh=sum(kh)
+    giohang, created= GioHang.objects.get_or_create(maKH = makh, trangThai= True)
+
+    # kh = KhachHang.objects.get(maKH= 1)
+    # giohang, created = GioHang.objects.get_or_create(maKH= kh, trangThai= True) # request.user
     ct_giohang = CTGioHang.objects.filter(maGH=giohang)
     total = sum(item.soLuong * item.giaMon for item in ct_giohang)
 
